@@ -7,17 +7,30 @@ mark_as_advanced(BUILD_OGL43)
 
 find_package(OpenGL REQUIRED)
 
+set(CURL_LIBRARY "-lcurl")
+#sudo apt install libcurl4-openssl-dev
+find_package(CURL REQUIRED)
+
 add_subdirectory(libs/glfw)
 add_subdirectory(libs/glxw)
 
 include_directories(libs/glfw/include)
 include_directories(libs/glm)
 include_directories(${CMAKE_BINARY_DIR}/libs/glxw/include)
+include_directories(${CURL_INCLUDE_DIR})
+include_directories(common)
 
 set(CMAKE_CXX_FLAGS "-O2 -Wall -Wextra")
-SET(LIBRARIES glfw glxw ${GLFW_LIBRARIES} ${GLXW_LIBRARY} ${OPENGL_LIBRARY} ${CMAKE_DL_LIBS})
+SET(LIBRARIES ${CURL_LIBRARIES} glfw glxw ${GLFW_LIBRARIES} ${GLXW_LIBRARY} ${OPENGL_LIBRARY} ${CMAKE_DL_LIBS})
 
 link_directories (${OPENGLEXAMPLES_BINARY_DIR}/bin)
+
+add_library (common common/stb_implementation.cpp)
+target_link_libraries(common ${LIBRARIES} )
+
+add_executable (makeover_tool makeover_tool/main.cpp)
+target_link_libraries(makeover_tool ${LIBRARIES} common )
+
 
 add_executable (00skeleton 00skeleton.cpp)
 target_link_libraries(00skeleton ${LIBRARIES} )
